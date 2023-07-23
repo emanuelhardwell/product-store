@@ -4,7 +4,10 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
-import {InternalServerErrorException } from "@nestjs/common";
+import {
+  InternalServerErrorException,
+  BadRequestException,
+} from '@nestjs/common';
 
 @Injectable()
 export class ProductsService {
@@ -23,8 +26,7 @@ export class ProductsService {
 
       return product;
     } catch (error) {
-      console.log(error);
-      throw new InternalServerErrorException('Error interno en el servidor');
+      this.handleDBExceptions(error);
     }
   }
 
@@ -42,5 +44,16 @@ export class ProductsService {
 
   remove(id: number) {
     return `This action removes a #${id} product`;
+  }
+
+  private handleDBExceptions(error: any) {
+    if (error.code === '23505') {
+      throw new BadRequestException(error.detail);
+    }
+    this.logger.error(error);
+    console.log('----------');
+    console.log(error.message);
+
+    throw new InternalServerErrorException('Internal Server Error');
   }
 }
