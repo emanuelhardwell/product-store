@@ -56,8 +56,18 @@ export class ProductsService {
     return `This action updates a #${id} product`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async remove(id: string) {
+    try {
+      const product = await this.productRepository.delete(id);
+
+      if (product.affected === 0) {
+        throw new NotFoundException(
+          `El producto con id: ${id} ya fue eliminado anteriormente`,
+        );
+      }
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
   }
 
   private handleDBExceptions(error: any) {
