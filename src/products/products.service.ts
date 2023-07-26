@@ -7,6 +7,7 @@ import { Product } from './entities/product.entity';
 import {
   InternalServerErrorException,
   BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
 
 @Injectable()
@@ -39,8 +40,16 @@ export class ProductsService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOne(id: string) {
+    try {
+      const product = await this.productRepository.findOneById(id);
+      if (!product) {
+        throw new NotFoundException(`El producto con id: ${id} no existe`);
+      }
+      return product;
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
   }
 
   update(id: number, updateProductDto: UpdateProductDto) {
