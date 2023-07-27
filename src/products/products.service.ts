@@ -53,16 +53,10 @@ export class ProductsService {
   }
 
   async remove(id: string) {
-    try {
-      const product = await this.productRepository.delete(id);
+    const product = await this.findOne(id);
 
-      if (product.affected === 0) {
-        throw new NotFoundException(
-          `El producto con id: ${id} ya fue eliminado anteriormente`,
-        );
-      }
-    } catch (error) {
-      this.handleDBExceptions(error);
+    if (product) {
+      await this.productRepository.delete(id);
     }
   }
 
