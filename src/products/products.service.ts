@@ -9,6 +9,7 @@ import {
   BadRequestException,
   NotFoundException,
 } from '@nestjs/common';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class ProductsService {
@@ -31,9 +32,15 @@ export class ProductsService {
     }
   }
 
-  async findAll() {
+  async findAll(paginationDto: PaginationDto) {
     try {
-      const products = await this.productRepository.find();
+      const { offset = 0, limit = 10 } = paginationDto;
+
+      const products = await this.productRepository.find({
+        take: limit,
+        skip: offset,
+        // TODO: relaciones
+      });
       return products;
     } catch (error) {
       this.handleDBExceptions(error);
