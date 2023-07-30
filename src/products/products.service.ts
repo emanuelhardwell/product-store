@@ -10,6 +10,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { isUUID } from 'class-validator';
 
 @Injectable()
 export class ProductsService {
@@ -47,10 +48,23 @@ export class ProductsService {
     }
   }
 
-  async findOne(id: string) {
-    const product = await this.productRepository.findOneBy({ id });
+  async findOne(term: string) {
+    let product;
+
+    if (isUUID(term)) {
+      product = await this.productRepository.findOneBy({ id: term });
+    } else {
+      const queryBuilder = this.productRepository.createQueryBuilder();
+      product = await queryBuilder
+        .where('UPPER(title)= :title OR slug= :slug', {
+          title: term.toUpperCase(),
+          slug: term.toLowerCase(),
+        })
+        .getOne();
+    }
+
     if (!product) {
-      throw new NotFoundException(`El producto con id: ${id} no existe`);
+      throw new NotFoundException(`El producto con ${term} no existe`);
     }
     return product;
   }
