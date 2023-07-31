@@ -1,5 +1,6 @@
 import {
   BeforeInsert,
+  BeforeUpdate,
   Column,
   Entity,
   PrimaryColumn,
@@ -50,6 +51,23 @@ export class Product {
 
   @BeforeInsert()
   beforeProductInsert() {
+    if (!this.slug) {
+      this.slug = this.title;
+    }
+
+    this.slug = this.slug
+      .toLowerCase()
+      .replaceAll(' ', '_')
+      .replaceAll("'", '')
+      .replaceAll('á', 'a')
+      .replaceAll('é', 'e')
+      .replaceAll('í', 'i')
+      .replaceAll('ó', 'o')
+      .replaceAll('ú', 'u');
+  }
+
+  @BeforeUpdate()
+  beforeProductUpdate() {
     if (!this.slug) {
       this.slug = this.title;
     }
