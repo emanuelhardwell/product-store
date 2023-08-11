@@ -50,8 +50,12 @@ export class ProductsService {
         take: limit,
         skip: offset,
         // TODO: relaciones
+        relations: { images: true },
       });
-      return products;
+      return products.map((product) => ({
+        ...product,
+        images: product.images.map((img) => img.url),
+      }));
     } catch (error) {
       this.handleDBExceptions(error);
     }
