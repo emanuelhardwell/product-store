@@ -3,7 +3,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Product } from './entities/product.entity';
+import { Product, ProductImage } from './entities';
 import {
   InternalServerErrorException,
   BadRequestException,
@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { isUUID } from 'class-validator';
-import { ProductImage } from './entities';
 
 @Injectable()
 export class ProductsService {
@@ -37,7 +36,7 @@ export class ProductsService {
 
       await this.productRepository.save(product);
 
-      return product;
+      return { ...product, images };
     } catch (error) {
       this.handleDBExceptions(error);
     }
@@ -84,6 +83,7 @@ export class ProductsService {
       const product = await this.productRepository.preload({
         id,
         ...updateProductDto,
+        images: [],
       });
 
       if (!product) {
