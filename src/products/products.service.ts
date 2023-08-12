@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product, ProductImage } from './entities';
 import {
@@ -21,6 +21,8 @@ export class ProductsService {
     private readonly productRepository: Repository<Product>,
     @InjectRepository(ProductImage)
     private readonly productImageRepository: Repository<ProductImage>,
+
+    private readonly dataSource: DataSource,
   ) {}
 
   async create(createProductDto: CreateProductDto) {
@@ -90,20 +92,38 @@ export class ProductsService {
   }
 
   async update(id: string, updateProductDto: UpdateProductDto) {
+    const { images, ...restProperties } = updateProductDto;
+
+    const queryRunner = await this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
     try {
       const product = await this.productRepository.preload({
         id,
-        ...updateProductDto,
-        images: [],
+        ...restProperties,
+        // images: [],
       });
+
+      if (images) {
+        await queryRunner.manager.delete(ProductImage, { product: { id: id } });
+
+        product.images = await images.map((imagen) =>
+          this.productImageRepository.create({ url: imagen }),
+        );
+      }
+
+      await queryRunner.manager.save(product);
+      await queryRunner.commitTransaction();
 
       if (!product) {
         throw new NotFoundException(`El producto con id: ${id} no existe`);
       }
 
       await this.productRepository.save(product);
-      return product;
+      return this.findOnePlain(id);
     } catch (error) {
+      await queryRunner.rollbackTransaction();
       this.handleDBExceptions(error);
     }
   }
