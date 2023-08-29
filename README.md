@@ -26,34 +26,20 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Installation
+# Product Store API
 
-```bash
-$ yarn install
+1. Clonar proyecto
+2. ```yarn install```
+3. Clonar el archivo ```.env.template``` y renombrarlo a ```.env```
+4. Cambiar las variables de entorno
+5. Levantar la base de datos
+```
+docker-compose up -d
 ```
 
-## Running the app
-
-```bash
-# development
-$ yarn run start
-
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
+6. Ejecutar SEED 
+```
+http://localhost:3000/api/seed
 ```
 
-## Test
-
-```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
-```
+7. Levantar: ```yarn start:dev```
