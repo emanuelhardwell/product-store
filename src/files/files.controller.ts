@@ -1,3 +1,4 @@
+import path from 'path';
 import {
   BadRequestException,
   Controller,
@@ -5,12 +6,11 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-import { FilesService } from './files.service';
+
 import { FileInterceptor } from '@nestjs/platform-express';
-import { fileFilter } from './helpers/fileFilter.helper';
 import { diskStorage } from 'multer';
-import path from 'path';
-import { fileNamer } from './helpers/fileNamer.helper';
+import { fileFilter, fileNamer } from './helpers';
+import { FilesService } from './files.service';
 
 @Controller('files')
 export class FilesController {
