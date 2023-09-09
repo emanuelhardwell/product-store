@@ -1,4 +1,3 @@
-import path from 'path';
 import {
   BadRequestException,
   Controller,
@@ -22,7 +21,7 @@ export class FilesController {
       fileFilter: fileFilter,
       // limits: { fileSize: 1000 }
       storage: diskStorage({
-        destination: path.join(__dirname, '././static/products'),
+        destination: "./static/products",
         filename: fileNamer,
       }),
     }),
@@ -33,6 +32,6 @@ export class FilesController {
     }
     // console.log(file);
 
-    return { fileType: file.mimetype };
+    return { filename: file.filename };
   }
 }
