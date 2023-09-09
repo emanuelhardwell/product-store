@@ -45,7 +45,8 @@ export class FilesController {
       throw new BadRequestException('Make sure that the file is an image');
     }
     // console.log(file);
+    const url = `http://localhost:3000/api/v1/files/product/${file.filename}`;
 
-    return { filename: file.filename };
+    return { url };
   }
 }
