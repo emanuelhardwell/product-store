@@ -12,7 +12,7 @@ export const fileNamer = (
   }
 
   const cutExtensionImage = file.mimetype.split('/')[1];
-  const newNameImage = `${randomUUID}.${cutExtensionImage}`;
+  const newNameImage = `${randomUUID()}.${cutExtensionImage}`;
 
   callBack(null, newNameImage);
 };
