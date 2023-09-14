@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
@@ -13,12 +17,27 @@ export class AuthService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const { password, ...userProperties } = createUserDto;
-    const user = this.userRepository.create({
-      ...userProperties,
-      password: bcrypt.hashSync(password, 10),
-    });
-    await this.userRepository.save(user);
-    return user;
+    try {
+      const { password, ...userProperties } = createUserDto;
+      const user = this.userRepository.create({
+        ...userProperties,
+        password: bcrypt.hashSync(password, 10),
+      });
+      await this.userRepository.save(user);
+      return user;
+    } catch (error) {
+      this.handleDBErrors(error);
+    }
+  }
+
+  handleDBErrors(error: any): never {
+    if (error.code === '23505') {
+      throw new BadRequestException(error.detail);
+    }
+    console.log(error);
+
+    throw new InternalServerErrorException(
+      'Internal Server Error. -- Report with the Admin',
+    );
   }
 }
