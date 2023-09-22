@@ -32,7 +32,7 @@ export class AuthService {
       delete user.password;
 
       return {
-        token: this.generateToken({ email: user.email }),
+        token: this.generateToken({ id: user.id }),
         ...user,
       };
     } catch (error) {
@@ -56,7 +56,7 @@ export class AuthService {
     }
 
     return {
-      token: this.generateToken({ email: user.email }),
+      token: this.generateToken({ id: user.id }),
       ...user,
     };
   }
