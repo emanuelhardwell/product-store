@@ -11,7 +11,7 @@ import { JwtPayloadInterface } from '../interfaces/jwt-payload.interface';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     @InjectRepository(User)
-    private readonly authRepository: Repository<User>,
+    private readonly userRepository: Repository<User>,
 
     configModule: ConfigModule,
   ) {
@@ -21,7 +21,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: JwtPayloadInterface): Promise<User> {
     const { email } = payload;
 
-    const user = await this.authRepository.findOneBy({ email });
+    const user = await this.userRepository.findOneBy({ email });
 
     if (!user) {
       throw new UnauthorizedException('User Unauthorized');
