@@ -1,7 +1,19 @@
-import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  UseGuards,
+  Req,
+  Headers,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto, LoginUserDto } from './dto';
 import { AuthGuard } from '@nestjs/passport';
+import { GetUserDecorator } from './decorators/get-user.decorator';
+import { RawHeadersDecorator } from './decorators/raw-headers.decorators';
+import { IncomingHttpHeaders } from 'http';
+import { User } from './entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -19,14 +31,24 @@ export class AuthController {
 
   @Get('private')
   @UseGuards(AuthGuard())
-  testingPrivateRoute() {
+  testingPrivateRoute(
+    // @Req() request: Express.Request, ## NO se debe sacar la INFO directamente del REQUEST, (se debe crear un Decorador)
+    @GetUserDecorator() user: User,
+    @GetUserDecorator('email') emailUser: string,
+    @RawHeadersDecorator() rawHeaders: string[],
+    @Headers() headers: IncomingHttpHeaders,
+  ) {
+    // console.log(request.user);
+    // console.log(emailUser);
+
     return {
       ok: true,
       message: 'successfully !',
       code: 200,
-      user: {
-        name: 'hardwell',
-      },
+      user,
+      emailUser,
+      rawHeaders,
+      headers,
     };
   }
 }
