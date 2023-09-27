@@ -4,7 +4,6 @@ import {
   ExecutionContext,
   ForbiddenException,
   Injectable,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { User } from '../entities/user.entity';
@@ -26,7 +25,13 @@ export class UserRoleGuard implements CanActivate {
 
     const rolesUser = user.roles;
 
-    const authorizedRoles = this.reflector.get('roles', context.getHandler());
+    const authorizedRoles: string[] = this.reflector.get(
+      'roles',
+      context.getHandler(),
+    );
+
+    if (!authorizedRoles) return true;
+    if (authorizedRoles.length === 0) return true;
 
     for (const role of rolesUser) {
       if (!authorizedRoles.includes(role)) {
