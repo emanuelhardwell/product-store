@@ -17,6 +17,7 @@ import { User } from './entities/user.entity';
 import { UserRoleGuard } from './guards/user-role.guard';
 import { RoleProtected } from './decorators/role-protected.decorator';
 import { validRoles } from './interfaces/valid-roles';
+import { Auth } from './decorators/auth.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -73,6 +74,16 @@ export class AuthController {
   testingPrivateRouteWithCustomGuardAndDecorator(
     @GetUserDecorator() user: User,
   ) {
+    return {
+      ok: true,
+      msg: 'successfully',
+      user,
+    };
+  }
+
+  @Get('private4')
+  @Auth(validRoles.user)
+  privateRouteWithCustomGuardAndDecorator(@GetUserDecorator() user: User) {
     return {
       ok: true,
       msg: 'successfully',
