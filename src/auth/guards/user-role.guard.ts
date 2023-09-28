@@ -8,6 +8,7 @@ import {
 import { Observable } from 'rxjs';
 import { User } from '../entities/user.entity';
 import { Reflector } from '@nestjs/core';
+import { META_ROLES } from '../decorators/role-protected.decorator';
 
 @Injectable()
 export class UserRoleGuard implements CanActivate {
@@ -26,7 +27,7 @@ export class UserRoleGuard implements CanActivate {
     const rolesUser = user.roles;
 
     const authorizedRoles: string[] = this.reflector.get(
-      'roles',
+      META_ROLES,
       context.getHandler(),
     );
 
@@ -34,14 +35,14 @@ export class UserRoleGuard implements CanActivate {
     if (authorizedRoles.length === 0) return true;
 
     for (const role of rolesUser) {
-      if (!authorizedRoles.includes(role)) {
-        throw new ForbiddenException(
-          `User: ${user.fullName} needs a valid role: (${authorizedRoles})`,
-        );
+      if (authorizedRoles.includes(role)) {
+        return true;
         // return false;
       }
     }
 
-    return true;
+    throw new ForbiddenException(
+      `User: ${user.fullName} needs a valid role: (${authorizedRoles})`,
+    );
   }
 }
