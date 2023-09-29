@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { isUUID } from 'class-validator';
+import { User } from 'src/auth/entities/user.entity';
 
 @Injectable()
 export class ProductsService {
@@ -25,12 +26,13 @@ export class ProductsService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async create(createProductDto: CreateProductDto) {
+  async create(createProductDto: CreateProductDto, user: User) {
     try {
       const { images = [], ...productProperties } = createProductDto;
 
       const product = this.productRepository.create({
         ...productProperties,
+        user,
         images: images.map((image) =>
           this.productImageRepository.create({ url: image }),
         ),
@@ -91,7 +93,7 @@ export class ProductsService {
     return { ...product, images: product.images.map((img) => img.url) };
   }
 
-  async update(id: string, updateProductDto: UpdateProductDto) {
+  async update(id: string, updateProductDto: UpdateProductDto, user: User) {
     const { images, ...restProperties } = updateProductDto;
 
     const queryRunner = await this.dataSource.createQueryRunner();
@@ -120,6 +122,7 @@ export class ProductsService {
         throw new NotFoundException(`El producto con id: ${id} no existe`);
       }
 
+      product.user= user;
       await this.productRepository.save(product);
       return this.findOnePlain(id);
     } catch (error) {
