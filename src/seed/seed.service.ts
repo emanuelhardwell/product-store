@@ -20,6 +20,12 @@ export class SeedService {
     return 'SEED EXECUTED';
   }
 
+  private async deleteTables() {
+    await this.productsService.removeAll();
+    const queryBuilder = await this.userRepository.createQueryBuilder();
+    await queryBuilder.delete().where({}).execute();
+  }
+
   private async insertNewProducts() {
     await this.productsService.removeAll();
 
