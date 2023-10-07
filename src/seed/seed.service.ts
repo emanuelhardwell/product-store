@@ -16,7 +16,6 @@ export class SeedService {
 
   async generateSeed() {
     await this.insertNewProducts();
-
     return 'SEED EXECUTED';
   }
 
@@ -24,6 +23,17 @@ export class SeedService {
     await this.productsService.removeAll();
     const queryBuilder = await this.userRepository.createQueryBuilder();
     await queryBuilder.delete().where({}).execute();
+  }
+
+  private async insertUsers() {
+    const arrayUsers = initialData.users;
+
+    arrayUsers.forEach((user) => {
+      this.userRepository.create(user);
+    });
+
+    const usersToSave = await this.userRepository.save(arrayUsers);
+    return usersToSave;
   }
 
   private async insertNewProducts() {
