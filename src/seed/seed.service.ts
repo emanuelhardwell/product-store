@@ -15,7 +15,10 @@ export class SeedService {
   ) {}
 
   async generateSeed() {
-    await this.insertNewProducts();
+    await this.deleteTables();
+    const userAdmin = await this.insertUsers();
+
+    await this.insertNewProducts(userAdmin);
     return 'SEED EXECUTED';
   }
 
@@ -33,19 +36,19 @@ export class SeedService {
     });
 
     const usersToSave = await this.userRepository.save(arrayUsers);
-    return usersToSave;
+    return usersToSave[0];
   }
 
-  private async insertNewProducts() {
+  private async insertNewProducts(user: User) {
     await this.productsService.removeAll();
 
     const arrayProductsSeed = initialData.products;
 
     const productsSeedPromises = [];
 
-    // arrayProductsSeed.forEach((product) => {
-    //   productsSeedPromises.push(this.productsService.create(product));
-    // });
+    arrayProductsSeed.forEach((product) => {
+      productsSeedPromises.push(this.productsService.create(product, user));
+    });
 
     await Promise.all(productsSeedPromises);
     return true;
