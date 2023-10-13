@@ -49,7 +49,9 @@ export class FilesController {
       throw new BadRequestException('Make sure that the file is an image');
     }
     // console.log(file);
-    const url = `${this.configService.get("HOST_API")}/files/product/${file.filename}`;
+    const url = `${this.configService.get('HOST_API')}/files/product/${
+      file.filename
+    }`;
 
     return { url };
   }
