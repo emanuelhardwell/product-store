@@ -72,16 +72,33 @@ export class CreateProductDto {
   @IsArray()
   sizes: string[];
 
+  @ApiProperty({
+    description: 'Product gender',
+    example: ['men', 'unisex'],
+    enum: ['men', 'women', 'kid', 'unisex'],
+  })
   @IsIn(['men', 'women', 'kid', 'unisex'])
   gender: string;
 
   // tags[]
+  @ApiPropertyOptional({
+    description: 'Product tags',
+    example: ['shirt', 'hoodie'],
+    type: [String],
+    // isArray: true
+  })
   @IsString({ each: true })
   @IsArray()
   @IsOptional()
   tags: string[];
 
   // images[]
+  @ApiPropertyOptional({
+    description: 'Product images',
+    example: ['7654420-00-A_0_2000.jpg', '7654420-00-A_0_3000.jpg'],
+    type: [String],
+    // isArray: true
+  })
   @IsString({ each: true })
   @IsArray()
   @IsOptional()
