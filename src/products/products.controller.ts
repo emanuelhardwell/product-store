@@ -24,7 +24,10 @@ export class ProductsController {
 
   @Post()
   @Auth(validRoles.user)
-  create(@Body() createProductDto: CreateProductDto, @GetUserDecorator() user: User) {
+  create(
+    @Body() createProductDto: CreateProductDto,
+    @GetUserDecorator() user: User,
+  ) {
     return this.productsService.create(createProductDto, user);
   }
 
@@ -43,7 +46,7 @@ export class ProductsController {
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateProductDto: UpdateProductDto,
-    @GetUserDecorator() user: User
+    @GetUserDecorator() user: User,
   ) {
     return this.productsService.update(id, updateProductDto, user);
   }
