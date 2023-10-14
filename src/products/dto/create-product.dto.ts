@@ -20,6 +20,7 @@ export class CreateProductDto {
     // required: true, // No es necesario ya que por defecto lo es
     nullable: false,
     minLength: 1,
+    uniqueItems: true,
   })
   @IsString()
   @MinLength(1)
@@ -47,6 +48,7 @@ export class CreateProductDto {
   @ApiPropertyOptional({
     description: 'Product slug',
     example: 'thermal_cuffed_beanie',
+    uniqueItems: true,
   })
   @IsString()
   @IsOptional()
