@@ -45,6 +45,17 @@ export class ProductsController {
   }
 
   @Get()
+  @ApiResponse({
+    status: 200,
+    description: 'Products get',
+    type: CreateProductDto,
+  })
+  @ApiResponse({ status: 404, description: 'Not Found. Products not found' })
+  @ApiResponse({ status: 403, description: 'Forbidden. Check the Token' })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error. Contact the Admin',
+  })
   findAll(@Query() paginationDto: PaginationDto) {
     return this.productsService.findAll(paginationDto);
   }
