@@ -61,6 +61,17 @@ export class ProductsController {
   }
 
   @Get(':term')
+  @ApiResponse({
+    status: 200,
+    description: 'Product get',
+    type: CreateProductDto,
+  })
+  @ApiResponse({ status: 404, description: 'Not Found. Product not found' })
+  @ApiResponse({ status: 403, description: 'Forbidden. Check the Token' })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error. Contact the Admin',
+  })
   findOne(@Param('term') term: string) {
     return this.productsService.findOnePlain(term);
   }
