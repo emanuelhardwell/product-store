@@ -77,6 +77,17 @@ export class ProductsController {
   }
 
   @Patch(':id')
+  @ApiResponse({
+    status: 201,
+    description: 'Product was updated',
+    type: CreateProductDto,
+  })
+  @ApiResponse({ status: 400, description: 'Bad Request. Bad properties' })
+  @ApiResponse({ status: 403, description: 'Forbidden. Check the Token' })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error. Contact the Admin',
+  })
   @Auth(validRoles.admin)
   update(
     @Param('id', ParseUUIDPipe) id: string,
