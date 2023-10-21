@@ -98,6 +98,16 @@ export class ProductsController {
   }
 
   @Delete(':id')
+  @ApiResponse({
+    status: 200,
+    description: 'Product was deleted',
+  })
+  @ApiResponse({ status: 400, description: 'Bad Request. Bad properties' })
+  @ApiResponse({ status: 403, description: 'Forbidden. Check the Token' })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal Server Error. Contact the Admin',
+  })
   @Auth(validRoles.superUser)
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.productsService.remove(id);
