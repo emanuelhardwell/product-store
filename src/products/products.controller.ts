@@ -48,7 +48,7 @@ export class ProductsController {
   @ApiResponse({
     status: 200,
     description: 'Products get',
-    type: CreateProductDto,
+    // type: CreateProductDto,
   })
   @ApiResponse({ status: 404, description: 'Not Found. Products not found' })
   @ApiResponse({ status: 403, description: 'Forbidden. Check the Token' })
